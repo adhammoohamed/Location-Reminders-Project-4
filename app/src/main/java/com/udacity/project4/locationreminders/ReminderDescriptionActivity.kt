@@ -12,6 +12,7 @@ import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
 /**
  * Activity that displays the reminder details after the user clicks on the notification
  */
+@Suppress("DEPRECATION")
 class ReminderDescriptionActivity : AppCompatActivity() {
 
     companion object {
@@ -33,5 +34,6 @@ class ReminderDescriptionActivity : AppCompatActivity() {
             R.layout.activity_reminder_description
         )
 //        TODO: Add the implementation of the reminder details
+        binding.reminderDataItem = intent.getSerializableExtra(EXTRA_ReminderDataItem) as ReminderDataItem
     }
 }
