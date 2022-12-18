@@ -29,7 +29,6 @@ class RemindersListViewModelTest {
 
     //TODO: provide testing to the RemindersListViewModel and its live data objects
     private lateinit var reminderListViewModel: RemindersListViewModel
-
     // use fakeData Source to be injected in view model
     private lateinit var fakeDataSource: FakeDataSource
 
