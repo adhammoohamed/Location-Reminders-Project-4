@@ -97,7 +97,7 @@ class SaveReminderFragment : BaseFragment() {
         }
 //        checkPermissionsAndStartGeofencing()
         binding.saveReminder.setOnClickListener {
-            checkPermissionsAndStartGeofencing()
+//            checkPermissionsAndStartGeofencing()
             title = _viewModel.reminderTitle.value
             description = _viewModel.reminderDescription.value
             location = _viewModel.reminderSelectedLocationStr.value
@@ -256,7 +256,14 @@ class SaveReminderFragment : BaseFragment() {
             if (it.isSuccessful) {
                 addGeofence()
                 val reminderDataItem =
-                    ReminderDataItem(title, description, location, latitude, longitude, id = id)
+                    ReminderDataItem(
+                        title!!,
+                        description!!,
+                        location!!,
+                        latitude!!,
+                        longitude!!,
+                        id = id!!
+                    )
                 _viewModel.saveReminder(reminderDataItem)
             }
         }

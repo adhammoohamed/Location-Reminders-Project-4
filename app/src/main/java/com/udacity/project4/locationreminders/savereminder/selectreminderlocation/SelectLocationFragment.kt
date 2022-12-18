@@ -77,7 +77,6 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback,
         binding.saveCurrentLocation.setOnClickListener {
             onLocationSelected()
         }
-        requestPermissions()
         return binding.root
     }
 
@@ -206,7 +205,6 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback,
             "this application cannot work without location permission", //when user denied
             1,
             Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION
         )
     }
 
