@@ -72,7 +72,7 @@ class ReminderListFragmentTest : AutoCloseKoinTest() {
                     get() as ReminderDataSource
                 )
             }
-            single { RemindersLocalRepository(get()) }
+            single { RemindersLocalRepository(get()) as ReminderDataSource }
             single { LocalDB.createRemindersDao(appContext) }
         }
 
@@ -134,4 +134,5 @@ class ReminderListFragmentTest : AutoCloseKoinTest() {
             onView(withText(reminder1.location)).check(matches(isDisplayed()))
         }
     }
+
 }
