@@ -4,11 +4,15 @@ import android.app.Activity
 import android.app.Application
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.withDecorView
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
@@ -85,7 +89,7 @@ class ReminderActivityTest : KoinTest {
                     get() as ReminderDataSource
                 )
             }
-            single { RemindersLocalRepository(get()) }
+            single { RemindersLocalRepository(get()) as ReminderDataSource }
             single { LocalDB.createRemindersDao(appContext) }
         }
         //initialize a new koin module
@@ -110,11 +114,11 @@ class ReminderActivityTest : KoinTest {
         dataBindingIdlingResource.monitorActivity(activityScenario)
 
         // click on the add reminder button
-        onView(withId(R.id.addReminderFAB)).perform(click())
+        onView(withId(R.id.addReminderFAB)).perform(ViewActions.click())
 
         // check that we are on the SaveReminder screen
-        onView(withId(R.id.reminderTitle))
-            .check(matches(isDisplayed()))
+        Espresso.onView(withId(R.id.reminderTitle))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
         // Make sure the activity is closed before resetting the db:
         activityScenario.close()
@@ -134,7 +138,7 @@ class ReminderActivityTest : KoinTest {
 
 
         //THEN >>> expect value SnackBar display when add reminder
-        onView(withId(com.google.android.material.R.id.snackbar_text))
+        Espresso.onView(withId(com.google.android.material.R.id.snackbar_text))
             .check(matches(withText(R.string.err_select_location)))
         activityScenario.close()
 
