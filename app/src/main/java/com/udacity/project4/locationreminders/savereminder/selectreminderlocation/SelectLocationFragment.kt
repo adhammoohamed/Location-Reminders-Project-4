@@ -32,11 +32,14 @@ import com.udacity.project4.base.NavigationCommand
 import com.udacity.project4.databinding.FragmentSelectLocationBinding
 import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
+import com.vmadalin.easypermissions.EasyPermissions
+import com.vmadalin.easypermissions.dialogs.SettingsDialog
 import org.koin.android.ext.android.inject
 import java.util.*
 
-@Suppress("DEPRECATION")
-class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
+@Suppress("DEPRECATION", "UNREACHABLE_CODE", "DEPRECATED_IDENTITY_EQUALS")
+class SelectLocationFragment : BaseFragment(), OnMapReadyCallback,
+    EasyPermissions.PermissionCallbacks {
 
     //Use Koin to get the view model of the SaveReminder
     override val _viewModel: SaveReminderViewModel by inject()
@@ -47,6 +50,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     private var mPoi: PointOfInterest? = null
     private lateinit var selectedLocation: LatLng
     private var selectedLocationDescription: String? = null
+    private val REQUEST_LOCATION_PERMISSION = 1
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -73,15 +77,44 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         binding.saveCurrentLocation.setOnClickListener {
             onLocationSelected()
         }
-
+        requestPermissions()
         return binding.root
     }
 
-    private fun onLocationSelected()  {
+    /**
+     * NOTE
+     * if the map not go to your location click at the gps button at the top right in the screen and,
+     * it will take you to your location*/
+    override fun onPermissionsDenied(requestCode: Int, perms: List<String>) {
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            SettingsDialog.Builder(requireActivity()).build().show()
+        } else {
+            requestPermissions()
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {
+        Toast.makeText(context, "Location permission is granted.", Toast.LENGTH_SHORT).show()
+            enableMyLocation()
+    }
+
+    //use onRequestPermissionResult method
+    @RequiresApi(Build.VERSION_CODES.Q)
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+    }
+
+    private fun onLocationSelected() {
         //        TODO: When the user confirms on the selected location,
         //         send back the selected location details to the view model
         //         and navigate back to the previous fragment to save the reminder and add the geofence
-        if (mPoi != null){
+        if (mPoi != null) {
             // the user select location from poi
             _viewModel.selectedPOI.value = mPoi
             _viewModel.reminderSelectedLocationStr.value = mPoi!!.name
@@ -91,15 +124,16 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
             _viewModel.navigationCommand.value = NavigationCommand.Back
 
             Log.i(TAG, _viewModel.selectedPOI.value!!.name)
-        }else if (selectedLocationDescription != null){
+        } else if (selectedLocationDescription != null) {
             // when user select a random location
             _viewModel.reminderSelectedLocationStr.value = selectedLocationDescription
             _viewModel.latitude.value = selectedLocation.latitude
             _viewModel.longitude.value = selectedLocation.longitude
             _viewModel.navigationCommand.value = NavigationCommand.Back
             Log.i(TAG, _viewModel.reminderSelectedLocationStr.value.toString())
-        }else{
-            Toast.makeText(requireContext(), getString(R.string.select_poi), Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(requireContext(), getString(R.string.select_poi), Toast.LENGTH_SHORT)
+                .show()
         }
     }
 
@@ -108,10 +142,10 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         map = googleMap
         setMapStyle(map)
         map.uiSettings.isZoomControlsEnabled = true
-        getUserLocation()
-        enableMyLocation()
         setMapLongClick(map)
         setPoiClick(map)
+        getUserLocation()
+        enableMyLocation()
     }
 
     private fun setPoiClick(map: GoogleMap) {
@@ -155,39 +189,32 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.Q)
     @SuppressLint("MissingPermission")
     //check the permissions
     private fun enableMyLocation() {
-        if (isLocationPermissionGranted()) {
-            // Permissions are granted
+        if (isPermissionGranted()) {
             getUserLocation()
-            map.setMyLocationEnabled(true)
-            Toast.makeText(context, "Location permission is granted.", Toast.LENGTH_SHORT).show()
+            map.isMyLocationEnabled = true
         } else {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ), 1
-            )
-            Toast.makeText(
-                requireContext(), R.string.permission_denied_explanation,
-                Toast.LENGTH_SHORT
-            ).show()
+            requestPermissions()
         }
     }
 
-    private fun isLocationPermissionGranted(): Boolean {
+    private fun requestPermissions() {
+        EasyPermissions.requestPermissions(
+            this,
+            "this application cannot work without location permission", //when user denied
+            1,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        )
+    }
+
+    private fun isPermissionGranted(): Boolean {
         return ContextCompat.checkSelfPermission(
             requireContext(),
             Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(
-                    requireContext(),
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ) == PackageManager.PERMISSION_GRANTED
+        ) === PackageManager.PERMISSION_GRANTED
     }
 
     private fun getUserLocation() {
@@ -226,10 +253,12 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
             }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.map_options, menu)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         // TODO: Change the map type based on the user's selection.
         R.id.normal_map -> {

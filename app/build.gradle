@@ -128,5 +128,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.google.android.gms:play-services-auth:20.4.0'
 
+    //Easy Permission
+    implementation 'com.vmadalin:easypermissions-ktx:1.0.0'
 
 }
