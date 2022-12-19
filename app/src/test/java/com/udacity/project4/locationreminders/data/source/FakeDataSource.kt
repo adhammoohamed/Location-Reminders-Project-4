@@ -26,7 +26,7 @@ class FakeDataSource(var reminders: MutableList<ReminderDTO> = mutableListOf()) 
         /**
          * as the reviewer mentioned here when the reminders not found the reminders it will be a mutable list,
          * and i should return it*/
-        if (reminders?.isEmpty()!!) {
+        if (reminders.isEmpty()) {
             return Result.Success(reminders)
         } else {
             return Result.Success(reminders)
@@ -34,7 +34,7 @@ class FakeDataSource(var reminders: MutableList<ReminderDTO> = mutableListOf()) 
     }
 
     override suspend fun saveReminder(reminder: ReminderDTO) {
-        reminders?.add(reminder)
+        reminders.add(reminder)
     }
 
     override suspend fun getReminder(id: String): Result<ReminderDTO> {
@@ -42,12 +42,12 @@ class FakeDataSource(var reminders: MutableList<ReminderDTO> = mutableListOf()) 
         if (_returnError) {
             return Result.Error("There is Exception Error!")
         }
-        reminders?.find { it.id == id }?.let { return Result.Success(it) }
+        reminders.find { it.id == id }?.let { return Result.Success(it) }
         return Result.Error("Not Found The Reminder Have Id = $id")
     }
 
     override suspend fun deleteAllReminders() {
-        reminders?.clear()
+        reminders.clear()
     }
 
 

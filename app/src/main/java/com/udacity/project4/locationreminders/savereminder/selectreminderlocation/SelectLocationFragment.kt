@@ -86,16 +86,21 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback,
      * it will take you to your location*/
     override fun onPermissionsDenied(requestCode: Int, perms: List<String>) {
         if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            Toast.makeText(
+                requireContext(),
+                "For best experience please grant the location permission",
+                Toast.LENGTH_SHORT
+            ).show()
             SettingsDialog.Builder(requireActivity()).build().show()
-        } else {
             requestPermissions()
+            if (isPermissionGranted()) enableMyLocation()
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {
         Toast.makeText(context, "Location permission is granted.", Toast.LENGTH_SHORT).show()
-            enableMyLocation()
+        enableMyLocation()
     }
 
     //use onRequestPermissionResult method
@@ -107,6 +112,19 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback,
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+
+        if (requestCode == REQUEST_LOCATION_PERMISSION) {
+            if (grantResults.size > 0 && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                enableMyLocation()
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    "For best experience please grant the location permission",
+                    Toast.LENGTH_SHORT
+                ).show()
+                requestPermissions()
+            }
+        }
     }
 
     private fun onLocationSelected() {
@@ -143,7 +161,6 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback,
         map.uiSettings.isZoomControlsEnabled = true
         setMapLongClick(map)
         setPoiClick(map)
-        getUserLocation()
         enableMyLocation()
     }
 
@@ -205,8 +222,11 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback,
             "this application cannot work without location permission", //when user denied
             1,
             Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
         )
+        if (isPermissionGranted()) enableMyLocation()
     }
+
 
     private fun isPermissionGranted(): Boolean {
         return ContextCompat.checkSelfPermission(

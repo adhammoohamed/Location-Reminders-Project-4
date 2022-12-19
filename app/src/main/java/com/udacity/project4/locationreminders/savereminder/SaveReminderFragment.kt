@@ -95,9 +95,7 @@ class SaveReminderFragment : BaseFragment() {
             _viewModel.navigationCommand.value =
                 NavigationCommand.To(SaveReminderFragmentDirections.actionSaveReminderFragmentToSelectLocationFragment())
         }
-//        checkPermissionsAndStartGeofencing()
         binding.saveReminder.setOnClickListener {
-//            checkPermissionsAndStartGeofencing()
             title = _viewModel.reminderTitle.value
             description = _viewModel.reminderDescription.value
             location = _viewModel.reminderSelectedLocationStr.value
@@ -159,18 +157,9 @@ class SaveReminderFragment : BaseFragment() {
                     Manifest.permission.ACCESS_COARSE_LOCATION
                 ), REQUEST_FOREGROUND_AND_BACKGROUND_PERMISSION_RESULT_CODE
             )
-        }
-    }
+                checkDeviceLocationSettingsAndStartGeofence()
 
-    private fun isLocationPermissionGranted(): Boolean {
-        return ContextCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(
-                    requireContext(),
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ) == PackageManager.PERMISSION_GRANTED
+        }
     }
 
     @Deprecated("Deprecated in Java")
@@ -265,6 +254,8 @@ class SaveReminderFragment : BaseFragment() {
                         id = id!!
                     )
                 _viewModel.saveReminder(reminderDataItem)
+                _viewModel.navigationCommand.value =
+                    NavigationCommand.To(SaveReminderFragmentDirections.actionSaveReminderFragmentToReminderListFragment())
             }
         }
     }
