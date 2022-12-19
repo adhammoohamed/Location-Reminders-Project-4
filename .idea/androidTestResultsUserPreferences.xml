@@ -8,11 +8,14 @@
             <AndroidTestResultsTableState>
               <option name="preferredColumnWidths">
                 <map>
+                  <entry key="196faa54" value="120" />
                   <entry key="Duration" value="90" />
                   <entry key="Pixel_2_API_30" value="120" />
+                  <entry key="Pixel_5_API_29" value="120" />
                   <entry key="Pixel_5_API_33" value="120" />
                   <entry key="Pixel_6_Pro_API_33" value="120" />
                   <entry key="Tests" value="360" />
+                  <entry key="Xiaomi&#10; Redmi Note 8" value="120" />
                 </map>
               </option>
             </AndroidTestResultsTableState>
@@ -24,6 +27,7 @@
               <option name="preferredColumnWidths">
                 <map>
                   <entry key="Duration" value="90" />
+                  <entry key="Pixel_5_API_29" value="120" />
                   <entry key="Pixel_5_API_33" value="120" />
                   <entry key="Pixel_6_Pro_API_33" value="120" />
                   <entry key="Tests" value="360" />
@@ -38,6 +42,7 @@
               <option name="preferredColumnWidths">
                 <map>
                   <entry key="Duration" value="90" />
+                  <entry key="Pixel_5_API_29" value="120" />
                   <entry key="Pixel_5_API_33" value="120" />
                   <entry key="Pixel_6_Pro_API_33" value="120" />
                   <entry key="Tests" value="360" />
