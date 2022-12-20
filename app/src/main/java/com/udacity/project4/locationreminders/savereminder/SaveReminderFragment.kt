@@ -253,9 +253,9 @@ class SaveReminderFragment : BaseFragment() {
                         longitude!!,
                         id = id!!
                     )
-                _viewModel.saveReminder(reminderDataItem)
-                _viewModel.navigationCommand.value =
-                    NavigationCommand.To(SaveReminderFragmentDirections.actionSaveReminderFragmentToReminderListFragment())
+                    _viewModel.saveReminder(reminderDataItem)
+                    _viewModel.navigationCommand.value =
+                        NavigationCommand.To(SaveReminderFragmentDirections.actionSaveReminderFragmentToReminderListFragment())
             }
         }
     }
